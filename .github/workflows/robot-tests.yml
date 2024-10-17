@@ -40,4 +40,5 @@ jobs:
       # Run Robot Framework tests with headless Chrome
       - name: Run Robot Framework Tests
         run: |
-          xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' robot --variable BROWSER:headlesschrome tests/test
+          xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' robot --variable BROWSER:headlesschrome Magalu-Robot/tests/test.robot
+
