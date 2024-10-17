@@ -1,4 +1,4 @@
-name: Robot Framework Selenium Tests
+name: Robot Framework Tests
 
 on: [push]
 
@@ -16,29 +16,23 @@ jobs:
         with:
           python-version: '3.x'
 
-      # Install Chrome and ChromeDriver
-      - name: Set up Chrome
+      # Install Edge and Edge WebDriver
+      - name: Set up Edge
         run: |
+          # Adiciona o repositório do Microsoft Edge
+          wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo gpg --dearmor -o /usr/share/keyrings/microsoft.gpg
+          echo "deb [signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/edge stable main" | sudo tee /etc/apt/sources.list.d/microsoft-edge.list
           sudo apt-get update
-          sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
-          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install
+          sudo apt-get install -y microsoft-edge-stable
 
-          # Get Chrome version
-          CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
-          echo "Chrome version: $CHROME_VERSION"
-
-          # Specify ChromeDriver version manually
-          CHROMEDRIVER_VERSION="130.0.6823.0"
-          echo "Using ChromeDriver version: $CHROMEDRIVER_VERSION"
-
-          # Download and install ChromeDriver
-          wget -N "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
-          unzip chromedriver_linux64.zip
-          sudo mv -f chromedriver /usr/local/bin/chromedriver
-          sudo chown root:root /usr/local/bin/chromedriver
-          sudo chmod 0755 /usr/local/bin/chromedriver
-
+          # Baixa a versão correspondente do Edge WebDriver
+          EDGE_VERSION=$(microsoft-edge --version | grep -oP '\d+\.\d+\.\d+')
+          DRIVER_VERSION=$(curl -s "https://msedgedriver.azureedge.net/LATEST_RELEASE_$EDGE_VERSION")
+          wget -N "https://msedgedriver.azureedge.net/$DRIVER_VERSION/edgedriver_linux64.zip"
+          unzip edgedriver_linux64.zip
+          sudo mv -f edgedriver /usr/local/bin/edgedriver
+          sudo chown root:root /usr/local/bin/edgedriver
+          sudo chmod 0755 /usr/local/bin/edgedriver
 
       # Install dependencies
       - name: Install dependencies
@@ -48,7 +42,7 @@ jobs:
           pip install robotframework-seleniumlibrary
           pip install selenium
 
-      # Run Robot Framework tests with headless Chrome
+      # Run Robot Framework tests with Edge
       - name: Run Robot Framework Tests
         run: |
-          xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' robot --variable BROWSER:chrome tests/test.robot
+          xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' robot --variable BROWSER:edge tests/test.robot
