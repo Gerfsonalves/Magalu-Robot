@@ -1,16 +1,31 @@
-name: Pipeline test
+name: Robot Framework Tests
 
-on: push
+# Aciona o workflow em eventos de push ou pull request
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  run-tests:
+    runs-on: ubuntu-latest  # Define o ambiente de execução como Ubuntu
 
     steps:
-      - name: Clonagem projeto
+      # Passo 1: Checa o código no repositório
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Configuração do Python
-        uses: actions/setup-python@v2
+      # Passo 2: Configura o Python no ambiente
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.11.2'
+          python-version: '3.11.2'  # Escolha a versão do Python que seu projeto usa
+
+      # Passo 3: Instala dependências
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install robotframework
