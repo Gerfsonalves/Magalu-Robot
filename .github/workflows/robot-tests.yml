@@ -16,6 +16,19 @@ jobs:
         with:
           python-version: '3.x'
 
+      # Install Chrome and ChromeDriver
+      - name: Set up Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
+          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install
+          wget -N https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo mv -f chromedriver /usr/local/bin/chromedriver
+          sudo chown root:root /usr/local/bin/chromedriver
+          sudo chmod 0755 /usr/local/bin/chromedriver
+
       # Install dependencies
       - name: Install dependencies
         run: |
@@ -24,14 +37,7 @@ jobs:
           pip install robotframework-seleniumlibrary
           pip install selenium
 
-      # Run Robot Framework tests
+      # Run Robot Framework tests with headless Chrome
       - name: Run Robot Framework Tests
         run: |
-          robot tests/test.robot
-
-      # Store test results as artifacts
-      - name: Archive Robot Framework Results
-        uses: actions/upload-artifact@v3
-        with:
-          name: robot-results
-          path: output/*
+          xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' robot --variable BROWSER:headlesschrome tests/test
