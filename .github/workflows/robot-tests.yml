@@ -1,4 +1,4 @@
-name: Robot Framework Tests
+name: Robot Framework Selenium Tests
 
 on: [push]
 
@@ -23,17 +23,19 @@ jobs:
           sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
           wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install
-          
+
+          # Get Chrome version
           CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
           echo "Chrome version: $CHROME_VERSION"
 
-          # Extracting the major version
+          # Get major version
           MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d '.' -f 1)
 
-          # Downloading the corresponding ChromeDriver version
+          # Get ChromeDriver version
           DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$MAJOR_VERSION")
           echo "Using ChromeDriver version: $DRIVER_VERSION"
 
+          # Download and install ChromeDriver
           wget -N "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip"
           unzip chromedriver_linux64.zip
           sudo mv -f chromedriver /usr/local/bin/chromedriver
@@ -51,4 +53,4 @@ jobs:
       # Run Robot Framework tests with headless Chrome
       - name: Run Robot Framework Tests
         run: |
-          xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' robot --variable BROWSER:headlesschrome tests/test.robot
+          xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' robot --variable BROWSER:chrome tests/test.robot
