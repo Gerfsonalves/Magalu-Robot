@@ -1,6 +1,5 @@
 name: Robot Framework Tests
 
-# Aciona o workflow em eventos de push ou pull request
 on:
   push:
     branches:
@@ -11,26 +10,30 @@ on:
 
 jobs:
   run-tests:
-    runs-on: ubuntu-latest  # Define o ambiente de execução como Ubuntu
-
+    runs-on: ubuntu-latest
     steps:
-      # Passo 1: Checa o código no repositório
+      
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Passo 2: Configura o Python no ambiente
+      
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11.2'  # Escolha a versão do Python que seu projeto usa
+          python-version: '3.11.2'
 
-      # Passo 3: Instala dependências
+      
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install robotframework
 
-            # Passo 4: Executa os testes do Robot Framework
+      
+      - name: List files
+        run: |
+          ls -R  # Lista todos os arquivos e diretórios recursivamente
+
+      
       - name: Run Robot Framework tests
         run: |
           robot --outputdir results/ tests/test.robot
