@@ -16,32 +16,19 @@ jobs:
         with:
           python-version: '3.x'
 
-      # Install Chrome and ChromeDriver
-      - name: Set up Chrome
+      # Install Firefox and GeckoDriver
+      - name: Set up Firefox
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
-          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install
-          
-          
-          CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
-          echo "Chrome version: $CHROME_VERSION"
+          sudo apt-get install -y firefox wget unzip xvfb libxi6 libgconf-2-4
 
-          
-          MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d '.' -f 1)
-
-          
-          DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$MAJOR_VERSION")
-          echo "Using ChromeDriver version: $DRIVER_VERSION"
-
-          wget -N "https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip"
-          unzip chromedriver_linux64.zip
-          sudo mv -f chromedriver /usr/local/bin/chromedriver
-          sudo chown root:root /usr/local/bin/chromedriver
-          sudo chmod 0755 /usr/local/bin/chromedriver
-
-
+          # Download the latest GeckoDriver
+          GECKODRIVER_VERSION=$(curl -s https://api.github.com/repos/mozilla/geckodriver/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')
+          echo "Using GeckoDriver version: $GECKODRIVER_VERSION"
+          wget "https://github.com/mozilla/geckodriver/releases/download/$GECKODRIVER_VERSION/geckodriver-linux64.tar.gz"
+          tar -xzf geckodriver-linux64.tar.gz
+          sudo mv geckodriver /usr/local/bin/
+          sudo chmod +x /usr/local/bin/geckodriver
 
       # Install dependencies
       - name: Install dependencies
@@ -51,7 +38,7 @@ jobs:
           pip install robotframework-seleniumlibrary
           pip install selenium
 
-      # Run Robot Framework tests with headless Chrome
+      # Run Robot Framework tests with headless Firefox
       - name: Run Robot Framework Tests
         run: |
-          xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' robot --variable BROWSER:headlesschrome tests/test.robot
+          xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' robot --variable BROWSER:firefox tests/test.robot
