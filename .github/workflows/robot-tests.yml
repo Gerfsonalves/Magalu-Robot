@@ -23,12 +23,15 @@ jobs:
           sudo apt-get install -y wget unzip xvfb libxi6 libgconf-2-4
           wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install
-          wget -N https://chromedriver.storage.googleapis.com/130.0.6723.58/chromedriver_linux64.zip
+          # Get Chrome version
+          CHROME_VERSION=$(google-chrome --version | grep -oE '[0-9]{1,3}\.[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,3}')
+          # Get the corresponding ChromeDriver version
+          DRIVER_VERSION=$(curl -s "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+          wget -N "https://chromedriver.storage.googleapis.com/$DRIVER_VERSION/chromedriver_linux64.zip"
           unzip chromedriver_linux64.zip
           sudo mv -f chromedriver /usr/local/bin/chromedriver
           sudo chown root:root /usr/local/bin/chromedriver
           sudo chmod 0755 /usr/local/bin/chromedriver
-
 
       # Install dependencies
       - name: Install dependencies
@@ -42,5 +45,3 @@ jobs:
       - name: Run Robot Framework Tests
         run: |
           xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' robot --variable BROWSER:headlesschrome tests/test.robot
-
-
