@@ -27,6 +27,9 @@ Cadastrar
   Click Element    //a[contains(@href, 'cliente/login')]
   Input Text       class=FormGroup-input                 ${EMAIL}
   Click Element    xpath=//button[.//span[text()='Continuar']]
+
+  # Essa parte esta comentada pois, após o click no login esta abrindo a verificação de humano ou robô
+
   #Wait Until Element Is Visible    xpath=//input[@name='cpf'] 
   #Input Text       xpath=//input[@name='cpf']            ${CPF}
   #Input Text       xpath=//input[@name="fullName"]       ${NOME}
