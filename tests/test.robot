@@ -3,11 +3,11 @@ Documentation  Teste inicial
 Resource  ../resources/resource.robot
 
 *** Test Cases ***
-Casos de teste
+Teste de pesquisa
   Acessar a página
   Pesquisar produto
   Validar resultado
 
-Casos de teste 2
+Cadastro de usuário
   Acessar a página
   Cadastrar

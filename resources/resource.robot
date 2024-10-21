@@ -4,7 +4,8 @@ Library  SeleniumLibrary
 *** Variables ***
 ${BROWSER}  chrome
 ${URL}  https://www.magazineluiza.com.br
-${EMAIL}  teste@gmail.com
+${EMAIL}  gebrialves@gmail.com
+${CPF}  11122233344
 
 *** Keywords ***
 Acessar a página
@@ -22,3 +23,5 @@ Cadastrar
   Click Element  //a[contains(@href, 'cliente/login')]
   Input Text  class=FormGroup-input  text=${EMAIL}
   Click Element    xpath=//button[.//span[text()='Continuar']]
+  Wait Until Element Is Visible    xpath=//input[@name='cpf'] 
+  Input Text    xpath=//input[@name='cpf']    ${CPF}
