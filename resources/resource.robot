@@ -33,3 +33,10 @@ Cadastrar
   #Input Text       xpath=//input[@name="birthDate"]      ${DATANASCIMENTO}
   #Input Password   xpath=//input[@name="password"]       ${PASSWORD}
   #Input Text       xpath=//input[@name="zipcode"]        ${CEP}
+
+Login
+  Click Element  //a[contains(@href, 'cliente/login')]
+  Input Text    xpath=(//input[@name='login'])[2]  ${EMAIL}
+  Input Password   xpath=//input[@name="password"]      ${PASSWORD}
+  Wait Until Element Is Visible    id=login-box-form-continue
+  Click Button    id=login-box-form-continue

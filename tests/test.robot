@@ -11,3 +11,7 @@ Teste de pesquisa
 Cadastro de usuário
   Acessar a página
   Cadastrar
+
+Login de usuário
+  Acessar a página
+  Login
